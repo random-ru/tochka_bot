@@ -1,0 +1,19 @@
+{
+  "name": "tochka-bot",
+  "version": "1.0.0",
+  "description": "Remove the idiots messages easily",
+  "type": "module",
+  "exports": "./index.js",
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "lowdb": "^3.0.0",
+    "telegraf": "^4.4.2"
+  }
+}
