@@ -11,7 +11,7 @@ dotenv.config()
 
 const BOT_ADMINS = process.env.BOT_ADMINS.split(',').map(Number)
 
-const DB_FILE = path.join(__dirname, 'db.json')
+const DB_FILE = path.join(__dirname, 'db', 'db.json')
 const adapter = new JSONFile(DB_FILE)
 const db = new Low(adapter)
 
