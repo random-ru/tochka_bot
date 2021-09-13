@@ -142,6 +142,11 @@ function handleDumbass(ctx) {
 }
 
 function handleMessage(ctx) {
+  const { edited_message } = ctx.update
+  if (edited_message) {
+    ctx.update.message = edited_message
+  }
+
   const { message } = ctx.update
   if (!message) return
 
@@ -155,6 +160,7 @@ function handleMessage(ctx) {
 }
 
 bot.on('text', handleMessage)
+bot.on('edited_message', handleMessage)
 
 async function bootstrap() {
   await db.read()
