@@ -72,7 +72,7 @@ function getMention(ctx) {
   const { from } = ctx.update.message;
   const user = getUser(ctx);
   const placeholder = userIsBlacklisted(user)
-    ? "Мразь обосанная"
+    ? "Мразь обоссаная"
     : "Долбоеб без юзернейма";
   return from.username ? `@${from.username}` : placeholder;
 }
@@ -88,14 +88,20 @@ function handleAdmin(ctx) {
   }
 
   if (!reply) {
-    ctx.reply("Нет реплая", { reply_to_message_id: message.message_id });
+    ctx.reply("Нет реплая", {
+      reply_to_message_id: message.message_id,
+      disable_notification: true,
+    });
     return;
   }
 
   const target = reply.from.id;
 
   if (userIsAdmin(target)) {
-    ctx.reply("Сорян, нихуя", { reply_to_message_id: message.message_id });
+    ctx.reply("Сорян, нихуя", {
+      reply_to_message_id: message.message_id,
+      disable_notification: true,
+    });
     return;
   }
 
@@ -104,14 +110,16 @@ function handleAdmin(ctx) {
     db.data.whitelist = db.data.whitelist.filter((id) => id !== target);
     ctx.reply("Пидорас ушел в бан, вкусно", {
       reply_to_message_id: message.message_id,
+      disable_notification: true,
     });
   }
 
   if (message.text === ".wl") {
     db.data.whitelist.push(target);
     db.data.blacklist = db.data.blacklist.filter((id) => id !== target);
-    ctx.reply("С долбоеба сняты точечные ограничения", {
+    ctx.reply("С господина сняты точечные ограничения", {
       reply_to_message_id: message.message_id,
+      disable_notification: true,
     });
   }
 
@@ -119,6 +127,7 @@ function handleAdmin(ctx) {
     db.data.blacklist = db.data.blacklist.filter((id) => id !== target);
     ctx.reply("Ну зачем прощать эту мразину?", {
       reply_to_message_id: message.message_id,
+      disable_notification: true,
     });
   }
 
@@ -126,6 +135,7 @@ function handleAdmin(ctx) {
     db.data.whitelist = db.data.whitelist.filter((id) => id !== target);
     ctx.reply("Доигрался дебилоид, обратно в очередняру", {
       reply_to_message_id: message.message_id,
+      disable_notification: true,
     });
   }
 
@@ -146,10 +156,15 @@ function handleDumbass(ctx) {
   const mention = getMention(ctx);
 
   if (userIsBlacklisted(user)) {
-    ctx.reply(`${mention}, ливни нахуй`);
+    ctx.reply(`${mention}, ливни нахуй`, {
+      disable_notification: true,
+    });
   } else {
     ctx.reply(
-      `${mention}, здесь запрещено писать сообщения с точками на конце`
+      `${mention}, здесь запрещено писать сообщения с точками на конце`,
+      {
+        disable_notification: true,
+      }
     );
   }
 }
