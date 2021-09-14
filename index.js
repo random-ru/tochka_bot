@@ -19,7 +19,7 @@ const db = new Low(adapter);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const dots = ['.', '.', '．', '｡', '•', '•', '•', '∙', '.', '.', '.']
-const hacks = [' ', 'ㅤ', 'ᅠ', '‎']
+const hacks = [' ', 'ㅤ', 'ᅠ', '‎', '\n']
 
 function hasDot(string, strict = false) {
   let dotsStarted = false
@@ -67,6 +67,7 @@ function userIsWhitelisted(id) {
 }
 
 function userIsBlacklisted(id) {
+  console.log(db.data.blacklist, id)
   return db.data.blacklist.includes(id);
 }
 
@@ -200,7 +201,7 @@ bot.on("text", handleMessage);
 bot.on("edited_message", handleMessage);
 
 async function bootstrap() {
-  await db.read();
+  await db.read()
 
   if (!db.data) {
     db.data = { whitelist: [], blacklist: [] };
