@@ -18,15 +18,28 @@ const db = new Low(adapter);
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const FILTERS = [
-  /.*[^.]+\.$/,
-  /.*[^.]+\.ㅤ$/,
-  /.*[^.]+。$/,
-  /.*[^.]+。ㅤ$/,
-  /.*[^.]+．$/,
-  /.*[^.]+．ㅤ$/,
-];
-const STRICT_FILTERS = [/.*\.$/, /.*\.ㅤ$/];
+const dots = ['.', '.ᅠ', '．', '｡', '•', '•', '•', '∙', '.', '.', '.ᅠ']
+const hacks = [' ', 'ㅤ', 'ᅠ', '‎']
+
+function hasDot(string, strict = false) {
+  let dotsStarted = false
+  for (let i = string.length - 1; i >= 0; i--) {
+    const char = string[i]
+    const isHack = hacks.includes(char)
+    if (isHack) continue
+    const isDot = dots.includes(char)
+    if (strict) return isDot
+    if (dotsStarted) return !isDot
+    if (!isDot) return false
+    // fix for only one dot
+    if (i === 0) return true
+    dotsStarted = true
+  }
+}
+
+
+const FILTERS = [/.*[^.]+\.$/, /.*[^.]+\.ㅤ$/]
+const STRICT_FILTERS = [/.*\.$/, /.*\.ㅤ$/]
 
 const state = {
   repliesMap: {},
@@ -58,21 +71,10 @@ function userIsBlacklisted(id) {
 }
 
 function messageIsBlocked(ctx) {
-  const { text } = ctx.update.message;
-
-  for (const filter of FILTERS) {
-    if (filter.test(text)) return true;
-  }
-
-  const user = getUser(ctx);
-
-  if (userIsBlacklisted(user)) {
-    for (const filter of STRICT_FILTERS) {
-      if (filter.test(text)) return true;
-    }
-  }
-
-  return false;
+  const { text } = ctx.update.message
+  const user = getUser(ctx)
+  const strict = userIsBlacklisted(user)
+  return hasDot(text, strict)
 }
 
 function getMention(ctx) {
