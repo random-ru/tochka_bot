@@ -18,7 +18,14 @@ const db = new Low(adapter);
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const FILTERS = [/.*[^.]+\.$/, /.*[^.]+\.ㅤ$/, /.*[^.]+。$/, /.*[^.]+。ㅤ$/];
+const FILTERS = [
+  /.*[^.]+\.$/,
+  /.*[^.]+\.ㅤ$/,
+  /.*[^.]+。$/,
+  /.*[^.]+。ㅤ$/,
+  /.*[^.]+．$/,
+  /.*[^.]+．ㅤ$/,
+];
 const STRICT_FILTERS = [/.*\.$/, /.*\.ㅤ$/];
 
 const state = {
