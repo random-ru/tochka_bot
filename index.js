@@ -36,7 +36,9 @@ const dots = [
   '.̡͇͖',
   '',
   '',
-  '.'
+  '.',
+  ' ̣',
+  '̣',
 ];
 
 const hacks = [
@@ -90,6 +92,7 @@ const hacks = [
   '⁭',
   '⁮',
   '⁯',
+  '͏',
 ];
 
 function hasDot(string, strict = false) {
