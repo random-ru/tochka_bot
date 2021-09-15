@@ -18,9 +18,8 @@ const db = new Low(adapter);
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const dots = ['.', '.', '．', '｡', '•', '•', '•', '∙', '.', '.', '.', '/.\n' +
-'.']
-const hacks = [' ', 'ㅤ', 'ᅠ', '‎', '\n']
+const dots = ['.', '.', '．', '｡', '•', '•', '•', '∙', '.', '.', '.', '﹒', ' ̣', '.͛̾͋', '.̡͇͖', '。']
+const hacks = [' ', 'ㅤ', 'ᅠ', '‎', '\n', ' ']
 
 function hasDot(string, strict = false) {
   let dotsStarted = false
