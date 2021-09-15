@@ -18,29 +18,28 @@ const db = new Low(adapter);
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const dots = ['.', '.', '．', '｡', '•', '•', '•', '∙', '.', '.', '.', '﹒', ' ̣', '.͛̾͋', '.̡͇͖', '。']
-const hacks = [' ', 'ㅤ', 'ᅠ', '‎', '\n', ' ']
+const dots = ['.', '.', '．', '｡', '•', '•', '•', '∙', '.', '.', '.', '﹒', ' ̣', '.͛̾͋', '.̡͇͖', '。'];
+const hacks = [' ', 'ㅤ', 'ᅠ', '‎', '\n', ' '];
 
 function hasDot(string, strict = false) {
-  let dotsStarted = false
+  let dotsStarted = false;
   for (let i = string.length - 1; i >= 0; i--) {
-    const char = string[i]
-    const isHack = hacks.includes(char)
-    if (isHack && dotsStarted) return true
-    if (isHack) continue
-    const isDot = dots.includes(char)
-    if (strict) return isDot
-    if (dotsStarted) return !isDot
-    if (!isDot) return false
+    const char = string[i];
+    const isHack = hacks.includes(char);
+    if (isHack && dotsStarted) return true;
+    if (isHack) continue;
+    const isDot = dots.includes(char);
+    if (strict) return isDot;
+    if (dotsStarted) return !isDot;
+    if (!isDot) return false;
     // fix for only one dot
-    if (i === 0) return true
-    dotsStarted = true
+    if (i === 0) return true;
+    dotsStarted = true;
   }
 }
 
-
-const FILTERS = [/.*[^.]+\.$/, /.*[^.]+\.ㅤ$/]
-const STRICT_FILTERS = [/.*\.$/, /.*\.ㅤ$/]
+const FILTERS = [/.*[^.]+\.$/, /.*[^.]+\.ㅤ$/];
+const STRICT_FILTERS = [/.*\.$/, /.*\.ㅤ$/];
 
 const state = {
   repliesMap: {},
@@ -68,15 +67,14 @@ function userIsWhitelisted(id) {
 }
 
 function userIsBlacklisted(id) {
-  console.log(db.data.blacklist, id)
   return db.data.blacklist.includes(id);
 }
 
 function messageIsBlocked(ctx) {
-  const { text } = ctx.update.message
-  const user = getUser(ctx)
-  const strict = userIsBlacklisted(user)
-  return hasDot(text, strict)
+  const { text } = ctx.update.message;
+  const user = getUser(ctx);
+  const strict = userIsBlacklisted(user);
+  return hasDot(text, strict);
 }
 
 function getMention(ctx) {
@@ -120,7 +118,7 @@ function handleAdmin(ctx) {
     db.data.blacklist.push(target);
     db.data.whitelist = db.data.whitelist.filter((id) => id !== target);
     ctx.reply("Пидорас ушел в бан, вкусно", {
-      reply_to_message_id: message.message_id,
+      reply_to_message_id: reply.message_id,
       disable_notification: true,
     });
   }
@@ -129,7 +127,7 @@ function handleAdmin(ctx) {
     db.data.whitelist.push(target);
     db.data.blacklist = db.data.blacklist.filter((id) => id !== target);
     ctx.reply("С господина сняты точечные ограничения", {
-      reply_to_message_id: message.message_id,
+      reply_to_message_id: reply.message_id,
       disable_notification: true,
     });
   }
@@ -137,7 +135,7 @@ function handleAdmin(ctx) {
   if (message.text === ".blr") {
     db.data.blacklist = db.data.blacklist.filter((id) => id !== target);
     ctx.reply("Ну зачем прощать эту мразину?", {
-      reply_to_message_id: message.message_id,
+      reply_to_message_id: reply.message_id,
       disable_notification: true,
     });
   }
@@ -145,7 +143,7 @@ function handleAdmin(ctx) {
   if (message.text === ".wlr") {
     db.data.whitelist = db.data.whitelist.filter((id) => id !== target);
     ctx.reply("Доигрался дебилоид, обратно в очередняру", {
-      reply_to_message_id: message.message_id,
+      reply_to_message_id: reply.message_id,
       disable_notification: true,
     });
   }
@@ -202,7 +200,7 @@ bot.on("text", handleMessage);
 bot.on("edited_message", handleMessage);
 
 async function bootstrap() {
-  await db.read()
+  await db.read();
 
   if (!db.data) {
     db.data = { whitelist: [], blacklist: [] };
