@@ -16,4 +16,4 @@ jobs:
         uses: satak/webrequest-action@master
         with:
           url: ${{ secrets.WEBHOOK_ID }}
-          headers: '{ "secret": ${{ secrets.WEBHOOK_SECRET }} }'
+          headers: '{ "secret": "${{ secrets.WEBHOOK_SECRET }}" }'
