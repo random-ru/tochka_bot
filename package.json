@@ -2,18 +2,25 @@
   "name": "tochka-bot",
   "version": "1.0.0",
   "description": "Remove the idiots messages easily",
-  "type": "module",
-  "exports": "./index.js",
-  "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
-  },
+  "main": "./index.js",
   "license": "UNLICENSED",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
-    "lowdb": "^3.0.0",
-    "telegraf": "^4.4.2"
+    "firebase-admin": "^9.11.1",
+    "node-telegram-bot-api": "^0.54.0"
+  },
+  "devDependencies": {
+    "@eslint-kit/eslint-config-base": "^5.0.2",
+    "@eslint-kit/eslint-config-node": "^2.0.0",
+    "@eslint-kit/eslint-config-patch": "^1.0.0",
+    "@eslint-kit/eslint-config-prettier": "^4.0.0",
+    "@eslint-kit/eslint-config-typescript": "^5.1.0",
+    "@typescript-eslint/parser": "4.15.0",
+    "eslint": "7.10.0",
+    "prettier": "2.3.0",
+    "typescript": "^4.4.3"
   }
 }

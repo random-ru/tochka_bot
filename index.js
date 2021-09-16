@@ -1,20 +1,18 @@
-//@ts-check
-import dotenv from "dotenv";
-import path from "path";
-import { Telegraf } from "telegraf";
-import { Low, JSONFile } from "lowdb";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+require('dotenv').config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-dotenv.config();
+const admin = require("firebase-admin");
+
+admin.initializeApp({
+  credential: admin.credential.cert(
+    JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+  ),
+  databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
+})
+
+const TelegramBot = require('node-telegram-bot-api');
+
 
 const BOT_ADMINS = process.env.BOT_ADMINS.split(",").map(Number);
-
-const DB_FILE = path.join(__dirname, "db", "db.json");
-const adapter = new JSONFile(DB_FILE);
-const db = new Low(adapter);
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -34,8 +32,6 @@ const dots = [
   ' ̣',
   '.͛̾͋',
   '.̡͇͖',
-  '',
-  '',
   '.',
   ' ̣',
   '̣',
