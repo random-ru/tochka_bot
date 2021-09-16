@@ -97,6 +97,11 @@ const hacks = [
 ];
 
 function hasDot(string, strict = false) {
+  if (strict)
+    return dots.some(dot => {
+      return string.includes(dot)
+    });
+
   let dotsStarted = false;
   for (let i = string.length - 1; i >= 0; i--) {
     const char = string[i];
