@@ -277,8 +277,17 @@ function handleMessage(ctx) {
   return handleDumbass(ctx);
 }
 
-bot.on("text", handleMessage);
-bot.on("edited_message", handleMessage);
+const withCatch = fn => (...args) => {
+  try {
+    return fn(...args)
+  } catch (err) {
+    console.log('Параша какая-то')
+    console.log(err.message)
+  }
+}
+
+bot.on("text", withCatch(handleMessage));
+bot.on("edited_message", withCatch(handleMessage));
 
 async function bootstrap() {
   await db.read();
