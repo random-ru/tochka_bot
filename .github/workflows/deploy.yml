@@ -1,0 +1,19 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Deploy Code
+        uses: satak/webrequest-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_ID }}
+          headers: '{ "secret": "${{ secrets.WEBHOOK_SECRET }}" }'
