@@ -152,6 +152,7 @@ function userIsBlacklisted(id) {
 
 function messageIsBlocked(ctx) {
   const {text} = ctx.update.message;
+  if (!text) return false
   const user = getUser(ctx);
   const strict = userIsBlacklisted(user);
   return hasDot(text, strict);
