@@ -19,20 +19,81 @@ const db = new Low(adapter);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const dots = [
-  ".",
-  ".",
-  "．",
-  "｡",
-  "•",
-  "•",
-  "•",
-  "∙",
-  ".",
-  ".",
-  ".",
-  "/.\n" + ".",
+  '.',
+  '.',
+  '．',
+  '｡',
+  '•',
+  '•',
+  '•',
+  '∙',
+  '.',
+  '.',
+  '.',
+  '﹒',
+  ' ̣',
+  '.͛̾͋',
+  '.̡͇͖',
+  '',
+  '',
+  '.',
+  ' ̣',
+  '̣',
 ];
-const hacks = [" ", "ㅤ", "ᅠ", "‎", "\n"];
+
+const hacks = [
+  ' ',
+  'ㅤ',
+  'ᅠ',
+  '‎',
+  '‏',
+  '\n',
+  ' ',
+  '᠎',
+  '᠎',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  '​',
+  ' ',
+  ' ',
+  '　',
+  '﻿',
+  '‌',
+  '‍',
+  ' ',
+  ' ',
+  '‪',
+  '‫',
+  '‬',
+  '‭',
+  '‮',
+  '⁠',
+  '⁡',
+  '⁢',
+  '⁣',
+  '⁤',
+  '⁥',
+  '⁦',
+  '⁧',
+  '⁨',
+  '⁩',
+  '⁪',
+  '⁫',
+  '⁬',
+  '⁭',
+  '⁮',
+  '⁯',
+  '͏',
+];
 
 function hasDot(string, strict = false) {
   let dotsStarted = false;
@@ -80,19 +141,18 @@ function userIsWhitelisted(id) {
 }
 
 function userIsBlacklisted(id) {
-  console.log(db.data.blacklist, id);
   return db.data.blacklist.includes(id);
 }
 
 function messageIsBlocked(ctx) {
-  const { text } = ctx.update.message;
+  const {text} = ctx.update.message;
   const user = getUser(ctx);
   const strict = userIsBlacklisted(user);
   return hasDot(text, strict);
 }
 
 function getMention(ctx) {
-  const { from } = ctx.update.message;
+  const {from} = ctx.update.message;
   const user = getUser(ctx);
   const placeholder = userIsBlacklisted(user)
     ? "Мразь обоссаная"
@@ -103,7 +163,7 @@ function getMention(ctx) {
 const COMMANDS = [".bl", ".wl", ".blr", ".wlr"];
 
 function handleAdmin(ctx) {
-  const { message } = ctx.update;
+  const {message} = ctx.update;
   const reply = message.reply_to_message;
 
   if (!COMMANDS.includes(message.text)) {
@@ -171,7 +231,7 @@ function handleDumbass(ctx) {
   if (userIsWhitelisted(user)) return;
   if (!messageIsBlocked(ctx)) return;
 
-  const { message_id } = ctx.update.message;
+  const {message_id} = ctx.update.message;
   ctx.deleteMessage(message_id);
 
   if (!canReply(ctx)) return;
@@ -193,12 +253,12 @@ function handleDumbass(ctx) {
 }
 
 function handleMessage(ctx) {
-  const { edited_message } = ctx.update;
+  const {edited_message} = ctx.update;
   if (edited_message) {
     ctx.update.message = edited_message;
   }
 
-  const { message } = ctx.update;
+  const {message} = ctx.update;
   if (!message) return;
 
   const user = getUser(ctx);
@@ -217,7 +277,7 @@ async function bootstrap() {
   await db.read();
 
   if (!db.data) {
-    db.data = { whitelist: [], blacklist: [] };
+    db.data = {whitelist: [], blacklist: []};
   }
 
   bot.launch();
