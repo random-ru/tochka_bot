@@ -17,4 +17,4 @@ jobs:
         with:
           url: ${{ secrets.WEBHOOK_ID }}
           method: GET
-          headers: '{"secret": "Token ${{ env.secrets.WEBHOOK_SECRET }}"}'
+          headers: '{"secret": "Token ${{ secrets.WEBHOOK_SECRET }}"}'
