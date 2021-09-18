@@ -37,7 +37,7 @@ async function getMention(message: TelegramBot.Message) {
   return senderIsBlacklisted ? 'Падонак позорный' : 'Слышь, этот самый'
 }
 
-const COMMANDS = ['.bl', '.wl', '.blr', '.wlr'];
+const COMMANDS = ['.bl', '.wl', '.blr', '.wlr']
 
 function isCommand(message: TelegramBot.Message) {
   if (!message.text) return false
@@ -65,11 +65,11 @@ async function handleCommand(message: TelegramBot.Message) {
       reply_to_message_id: message.message_id,
       disable_notification: true,
     })
-    return;
+    return
   }
 
   const target = reply.from
-  if (!target) return;
+  if (!target) return
 
   const targetIsAdmin = await userLib.isAdmin(target.id)
 
@@ -78,7 +78,7 @@ async function handleCommand(message: TelegramBot.Message) {
       reply_to_message_id: message.message_id,
       disable_notification: true,
     })
-    return;
+    return
   }
 
   const botProfile = await bot.getMe()
@@ -88,18 +88,18 @@ async function handleCommand(message: TelegramBot.Message) {
     bot.sendMessage(message.chat.id, 'Я с тебя админку щас сниму нахуй', {
       reply_to_message_id: message.message_id,
       disable_notification: true,
-    });
-    return;
+    })
+    return
   }
 
   async function clearLists(id: number) {
-    await Api.whitelistedUsers.delete(id).catch(() => {});
-    await Api.blacklistedUsers.delete(id).catch(() => {});
+    await Api.whitelistedUsers.delete(id).catch(() => {})
+    await Api.blacklistedUsers.delete(id).catch(() => {})
   }
 
   if (message.text === '.bl') {
     await clearLists(target.id)
-    await Api.blacklistedUsers.create(target.id);
+    await Api.blacklistedUsers.create(target.id)
 
     bot.sendMessage(message.chat.id, 'Ахахах попался, ищи себя в паблике прошмандовки Азербайджана', {
       reply_to_message_id: reply.message_id,
