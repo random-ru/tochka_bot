@@ -21,6 +21,7 @@
     "@eslint-kit/eslint-config-prettier": "^4.0.0",
     "@eslint-kit/eslint-config-typescript": "^5.1.0",
     "@types/axios": "^0.14.0",
+    "@types/dotenv": "^8.2.0",
     "@types/node-telegram-bot-api": "^0.51.4",
     "@typescript-eslint/parser": "4.15.0",
     "@vercel/ncc": "^0.31.1",
