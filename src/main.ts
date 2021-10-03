@@ -54,33 +54,26 @@ async function handleCommand(message: TelegramBot.Message) {
 
   const senderIsAdmin = await userEntity.isAdmin(sender.id)
 
-  if (!senderIsAdmin) {
-    bot.sendMessage(message.chat.id, 'Лямку завяжи, сынок ёбанный', {
+  function replyToSender(text: string) {
+    bot.sendMessage(message.chat.id, text, {
       reply_to_message_id: message.message_id,
       disable_notification: true,
     })
-    return
+  }
+
+  if (!senderIsAdmin) {
+    return replyToSender('Лямку завяжи, сынок ёбанный')
   }
 
   if (message.text === COMMANDS.RELOAD) {
     loadData()
-
-    bot.sendMessage(message.chat.id, 'Повинуюсь, господин', {
-      reply_to_message_id: message.message_id,
-      disable_notification: true,
-    })
-
-    return
+    return replyToSender('Повинуюсь, господин')
   }
 
   const reply = message.reply_to_message
 
   if (!reply) {
-    bot.sendMessage(message.chat.id, 'Ваше превосходительство, сделайте реплай пожалуйста, ня', {
-      reply_to_message_id: message.message_id,
-      disable_notification: true,
-    })
-    return
+    return replyToSender('Ваше превосходительство, сделайте реплай пожалуйста, ня')
   }
 
   const target = reply.from
@@ -89,22 +82,22 @@ async function handleCommand(message: TelegramBot.Message) {
   const targetIsAdmin = await userEntity.isAdmin(target.id)
 
   if (targetIsAdmin) {
-    bot.sendMessage(message.chat.id, 'Фрэндли фаер?', {
-      reply_to_message_id: message.message_id,
-      disable_notification: true,
-    })
-    return
+    return replyToSender('Фрэндли фаер?')
   }
 
   const botProfile = await bot.getMe()
   const targetIsBot = target.id === botProfile.id
 
   if (targetIsBot) {
-    bot.sendMessage(message.chat.id, 'Я с тебя админку щас сниму нахуй', {
-      reply_to_message_id: message.message_id,
-      disable_notification: true,
+    return replyToSender('Я с тебя админку щас сниму нахуй')
+  }
+
+  function replyToTarget(text: string) {
+    if (!reply) return
+    bot.deleteMessage(message.chat.id, String(message.message_id))
+    bot.sendMessage(message.chat.id, text, {
+      reply_to_message_id: reply.message_id,
     })
-    return
   }
 
   async function clearLists(id: number) {
@@ -121,40 +114,24 @@ async function handleCommand(message: TelegramBot.Message) {
     await clearLists(target.id)
     await Api.blacklist.addOne(target.id)
     reloadLists()
-
-    bot.sendMessage(message.chat.id, 'Ахахах попался, ищи себя в паблике прошмандовки Азербайджана', {
-      reply_to_message_id: reply.message_id,
-      disable_notification: true,
-    })
+    return replyToTarget('Ахахах попался, ищи себя в паблике прошмандовки Азербайджана')
   }
 
   if (message.text === COMMANDS.WHITELIST_ADD) {
     await clearLists(target.id)
     await Api.whitelist.addOne(target.id)
     reloadLists()
-
-    bot.sendMessage(message.chat.id, 'Ну лан, побудешь чуток на подсосе', {
-      reply_to_message_id: reply.message_id,
-      disable_notification: true,
-    })
+    return replyToTarget('Пересып с админом засчитан')
   }
 
   if (message.text === COMMANDS.BLACKLIST_REMOVE) {
     await clearLists(target.id)
-
-    bot.sendMessage(message.chat.id, 'Ладно, гуляй пока что', {
-      reply_to_message_id: reply.message_id,
-      disable_notification: true,
-    })
+    return replyToTarget('Наныл себе разблокировку, поздравляю')
   }
 
   if (message.text === COMMANDS.WHITELIST_REMOVE) {
     await clearLists(target.id)
-
-    bot.sendMessage(message.chat.id, 'Лошара)', {
-      reply_to_message_id: reply.message_id,
-      disable_notification: true,
-    })
+    return replyToTarget('Лошара)')
   }
 }
 
