@@ -1,7 +1,7 @@
 {
-  "name": "tochka-bot",
+  "name": "telegram-bot",
   "version": "1.0.0",
-  "description": "Remove the idiots messages easily",
+  "description": "@random_ru",
   "main": "dist/index.js",
   "license": "UNLICENSED",
   "scripts": {
@@ -11,8 +11,10 @@
   "dependencies": {
     "axios": "^0.21.4",
     "dotenv": "^10.0.0",
+    "effector": "^22.1.1",
     "firebase-admin": "^9.11.1",
-    "node-telegram-bot-api": "^0.54.0"
+    "node-telegram-bot-api": "^0.54.0",
+    "rnd-vault": "^0.0.7"
   },
   "devDependencies": {
     "@eslint-kit/eslint-config-base": "^5.0.2",

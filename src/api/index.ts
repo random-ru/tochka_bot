@@ -1,3 +1,3 @@
-import * as Api from './requests'
+import * as entities from './entities'
 
-export { Api }
+export { entities as Api }

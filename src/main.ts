@@ -1,16 +1,10 @@
 import TelegramBot from 'node-telegram-bot-api'
 import { Api } from './api'
-import { userLib } from './lib/user'
+import { userEntity } from './entities/user'
+import { stringsLib } from './lib/strings'
+import { blacklist, botLaunched, loadData, whitelist } from './model'
 
 const bot = new TelegramBot(process.env.BOT_TOKEN)
-
-const dots = ['.', '.', '．', '｡', '•', '•', '•', '∙', '.', '.', '.', '﹒', ' ̣', '.͛̾͋', '.̡͇͖', '.', ' ̣', '̣']
-
-function hasDot(text: string, strict = false) {
-  return dots.some((dot) => {
-    return text.includes(dot)
-  })
-}
 
 const repliesMap = new Map<number, number>()
 
@@ -30,31 +24,52 @@ function getUser(message: TelegramBot.Message) {
 }
 
 async function getMention(message: TelegramBot.Message) {
-  const sender = message.from
+  const sender = getUser(message)
   if (!sender) return false
 
-  const senderIsBlacklisted = await userLib.isBlacklisted(sender.id)
+  if (sender.username) {
+    return `@${sender.username}`
+  }
+
+  const senderIsBlacklisted = await userEntity.isBlacklisted(sender.id)
   return senderIsBlacklisted ? 'Падонак позорный' : 'Слышь, этот самый'
 }
 
-const COMMANDS = ['.bl', '.wl', '.blr', '.wlr']
+const COMMANDS = {
+  RELOAD: '-reload',
+  BLACKLIST_ADD: '-tochka blacklist',
+  BLACKLIST_REMOVE: '-tochka blacklist remove',
+  WHITELIST_ADD: '-tochka whitelist',
+  WHITELIST_REMOVE: '-tochka whitelist remove',
+}
 
 function isCommand(message: TelegramBot.Message) {
   if (!message.text) return false
-  return COMMANDS.includes(message.text)
+  return Object.values(COMMANDS).includes(message.text)
 }
 
 async function handleCommand(message: TelegramBot.Message) {
   const sender = message.from
   if (!sender) return
 
-  const senderIsAdmin = await userLib.isAdmin(sender.id)
+  const senderIsAdmin = await userEntity.isAdmin(sender.id)
 
   if (!senderIsAdmin) {
     bot.sendMessage(message.chat.id, 'Лямку завяжи, сынок ёбанный', {
       reply_to_message_id: message.message_id,
       disable_notification: true,
     })
+    return
+  }
+
+  if (message.text === COMMANDS.RELOAD) {
+    loadData()
+
+    bot.sendMessage(message.chat.id, 'Повинуюсь, господин', {
+      reply_to_message_id: message.message_id,
+      disable_notification: true,
+    })
+
     return
   }
 
@@ -71,7 +86,7 @@ async function handleCommand(message: TelegramBot.Message) {
   const target = reply.from
   if (!target) return
 
-  const targetIsAdmin = await userLib.isAdmin(target.id)
+  const targetIsAdmin = await userEntity.isAdmin(target.id)
 
   if (targetIsAdmin) {
     bot.sendMessage(message.chat.id, 'Фрэндли фаер?', {
@@ -93,13 +108,19 @@ async function handleCommand(message: TelegramBot.Message) {
   }
 
   async function clearLists(id: number) {
-    await Api.whitelistedUsers.delete(id).catch(() => {})
-    await Api.blacklistedUsers.delete(id).catch(() => {})
+    await Api.whitelist.deleteOne(id)
+    await Api.blacklist.deleteOne(id)
   }
 
-  if (message.text === '.bl') {
+  async function reloadLists() {
+    whitelist.load()
+    blacklist.load()
+  }
+
+  if (message.text === COMMANDS.BLACKLIST_ADD) {
     await clearLists(target.id)
-    await Api.blacklistedUsers.create(target.id)
+    await Api.blacklist.addOne(target.id)
+    reloadLists()
 
     bot.sendMessage(message.chat.id, 'Ахахах попался, ищи себя в паблике прошмандовки Азербайджана', {
       reply_to_message_id: reply.message_id,
@@ -107,9 +128,10 @@ async function handleCommand(message: TelegramBot.Message) {
     })
   }
 
-  if (message.text === '.wl') {
+  if (message.text === COMMANDS.WHITELIST_ADD) {
     await clearLists(target.id)
-    await Api.whitelistedUsers.create(target.id)
+    await Api.whitelist.addOne(target.id)
+    reloadLists()
 
     bot.sendMessage(message.chat.id, 'Ну лан, побудешь чуток на подсосе', {
       reply_to_message_id: reply.message_id,
@@ -117,7 +139,7 @@ async function handleCommand(message: TelegramBot.Message) {
     })
   }
 
-  if (message.text === '.blr') {
+  if (message.text === COMMANDS.BLACKLIST_REMOVE) {
     await clearLists(target.id)
 
     bot.sendMessage(message.chat.id, 'Ладно, гуляй пока что', {
@@ -126,7 +148,7 @@ async function handleCommand(message: TelegramBot.Message) {
     })
   }
 
-  if (message.text === '.wlr') {
+  if (message.text === COMMANDS.WHITELIST_REMOVE) {
     await clearLists(target.id)
 
     bot.sendMessage(message.chat.id, 'Лошара)', {
@@ -142,13 +164,13 @@ async function handleDefault(message: TelegramBot.Message) {
   const sender = message.from
   if (!sender) return
 
-  const senderIsAdmin = await userLib.isAdmin(sender.id)
-  const senderIsWhitelisted = await userLib.isWhitelisted(sender.id)
+  const senderIsAdmin = await userEntity.isAdmin(sender.id)
+  const senderIsWhitelisted = await userEntity.isWhitelisted(sender.id)
   if (senderIsAdmin || senderIsWhitelisted) return
 
-  const senderIsBlacklisted = await userLib.isBlacklisted(sender.id)
-  const messageIsBlocked = hasDot(message.text, senderIsBlacklisted)
-  if (!messageIsBlocked) return
+  const senderIsBlacklisted = await userEntity.isBlacklisted(sender.id)
+  const { hasDotAtTheEnd, hasBlacklistedSymbolAtTheEnd } = stringsLib.analyze(message.text, senderIsBlacklisted)
+  if (!hasDotAtTheEnd && !hasBlacklistedSymbolAtTheEnd) return
 
   const willReply = canReply(message)
   await bot.deleteMessage(message.chat.id, String(message.message_id))
@@ -156,10 +178,24 @@ async function handleDefault(message: TelegramBot.Message) {
   if (!willReply) return
   const mention = await getMention(message)
 
-  if (senderIsBlacklisted) {
-    bot.sendMessage(message.chat.id, `${mention}, ливни нахуй`, { disable_notification: true })
-  } else {
-    bot.sendMessage(message.chat.id, `${mention}, хули такой серьезный?`, { disable_notification: true })
+  const reply = (text: string) => {
+    bot.sendMessage(message.chat.id, text, { disable_notification: true })
+  }
+
+  if (senderIsBlacklisted && hasBlacklistedSymbolAtTheEnd) {
+    return reply(`${mention}, может уже ливнешь просто? Пытается он тут`)
+  }
+
+  if (senderIsBlacklisted && hasDotAtTheEnd) {
+    return reply(`${mention}, ливни нахуй вместе со своей точкой`)
+  }
+
+  if (hasBlacklistedSymbolAtTheEnd) {
+    return reply(`${mention}, тут юникод запрещен, ебало вырубай нахуй`)
+  }
+
+  if (hasDotAtTheEnd) {
+    return reply(`${mention}, хули такой серьезный? Точку завяжи свою`)
   }
 }
 
@@ -167,11 +203,16 @@ async function handleMessage(message: TelegramBot.Message) {
   const user = getUser(message)
   if (!user) return
 
-  if (isCommand(message)) {
-    return handleCommand(message)
-  }
+  try {
+    if (isCommand(message)) {
+      return await handleCommand(message)
+    }
 
-  return handleDefault(message)
+    return await handleDefault(message)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error)
+  }
 }
 
 bot.on('message', handleMessage)
@@ -179,4 +220,5 @@ bot.on('edited_message', handleMessage)
 
 export async function bootstrap() {
   bot.startPolling()
+  botLaunched()
 }

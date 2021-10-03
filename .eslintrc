@@ -21,6 +21,7 @@
     }
   },
   "rules": {
-    "unicorn/prevent-abbreviations": "off"
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/number-literal-case": "off"
   }
 }
