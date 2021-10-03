@@ -37,10 +37,10 @@ async function getMention(message: TelegramBot.Message) {
 
 const COMMANDS = {
   RELOAD: '-reload',
-  BLACKLIST_ADD: '-tochka blacklist',
-  BLACKLIST_REMOVE: '-tochka blacklist remove',
-  WHITELIST_ADD: '-tochka whitelist',
-  WHITELIST_REMOVE: '-tochka whitelist remove',
+  BLACKLIST_ADD: '-dotnet blacklist',
+  BLACKLIST_REMOVE: '-dotnet blacklist remove',
+  WHITELIST_ADD: '-dotnet whitelist',
+  WHITELIST_REMOVE: '-dotnet whitelist remove',
 }
 
 function isCommand(message: TelegramBot.Message) {
