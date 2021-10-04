@@ -4,5 +4,3 @@ services:
   bot:
     build: .
     env_file: ./.env
-    volumes:
-      - ./db:/usr/src/app/db
