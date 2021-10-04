@@ -1,0 +1,16 @@
+{
+  "printWidth": 120,
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "quoteProps": "consistent",
+  "endOfLine": "lf",
+  "importOrder": [
+    "^@app(\\/(.*))?$",
+    "^[./]"
+  ],
+  "experimentalBabelParserPluginsList": [
+    "jsx",
+    "typescript"
+  ]
+}
