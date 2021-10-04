@@ -107,8 +107,8 @@ interface Options {
 }
 
 function populate(message: string, values: Record<string, string> = {}) {
-  return Object.entries(values).reduce(([key, value]) => {
-    return message.replace(`{{${key}}}`, value)
+  return Object.entries(values).reduce((acc, [key, value]) => {
+    return acc.replace(`{{${key}}}`, value)
   }, message)
 }
 
