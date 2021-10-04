@@ -14,7 +14,7 @@
     "effector": "^22.1.1",
     "firebase-admin": "^9.11.1",
     "node-telegram-bot-api": "^0.54.0",
-    "rnd-vault": "^0.0.7"
+    "rnd-vault": "^0.0.8"
   },
   "devDependencies": {
     "@eslint-kit/eslint-config-base": "^5.0.2",

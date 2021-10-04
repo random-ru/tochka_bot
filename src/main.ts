@@ -102,8 +102,8 @@ async function handleCommand(message: TelegramBot.Message) {
   }
 
   async function clearLists(id: number) {
-    await Api.whitelist.deleteOne(id)
-    await Api.blacklist.deleteOne(id)
+    await Api.whitelist.deleteAll(id)
+    await Api.blacklist.deleteAll(id)
   }
 
   async function reloadLists() {
