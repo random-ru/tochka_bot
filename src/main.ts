@@ -3,6 +3,7 @@ import { Api } from './api'
 import { Collection, Dictionary } from './dictionary'
 import { userEntity } from './entities/user'
 import { stringsLib } from './lib/strings'
+import { Time } from './lib/time'
 import { blacklist, botLaunched, loadData, whitelist } from './model'
 
 const bot = new TelegramBot(process.env.BOT_TOKEN)
@@ -172,6 +173,9 @@ async function handleDefault(message: TelegramBot.Message) {
 }
 
 async function handleMessage(message: TelegramBot.Message) {
+  const isOld = Date.now() - message.date > Time.Minute
+  if (isOld) return
+
   const user = getUser(message)
   if (!user) return
 
