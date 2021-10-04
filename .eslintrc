@@ -22,6 +22,7 @@
   },
   "rules": {
     "unicorn/prevent-abbreviations": "off",
-    "unicorn/number-literal-case": "off"
+    "unicorn/number-literal-case": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off"
   }
 }
