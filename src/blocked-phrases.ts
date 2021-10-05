@@ -41,7 +41,6 @@ function phrase(string: string): RegExp[] {
 }
 
 const BLOCKED_PHRASES: BlockedPhraseConfig = {
-  all: phrase('ор'),
   /* Соре суацк */
   323030186: [...phrase('поридж'), ...phrase('поредж')],
   /* Ливни нахуй */
