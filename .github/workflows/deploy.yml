@@ -18,6 +18,6 @@ jobs:
           url: ${{ secrets.WEBHOOK_ID }}
           method: POST
           headers: '{ "secret": "${{ secrets.WEBHOOK_SECRET }}" }'
-          payload: '{ "env": { "BOT_TOKEN": "${{ secrets.BOT_TOKEN }}", "VAULT_SPACE_KEY": "${{ secrets.VAULT_SPACE_KEY }}", "VAULT_APP_KEY": "${{ secrets.VAULT_APP_KEY }}" } }'
+          payload: '{ "env": { "BOT_TOKEN": "${{ secrets.BOT_TOKEN }}", "VAULT_SPACE": "${{ secrets.VAULT_SPACE }}", "VAULT_APP": "${{ secrets.VAULT_APP }}", "VAULT_SPACE_KEY": "${{ secrets.VAULT_SPACE_KEY }}", "VAULT_APP_KEY": "${{ secrets.VAULT_APP_KEY }}" } }'
 
 
