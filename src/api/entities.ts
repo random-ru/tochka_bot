@@ -1,8 +1,8 @@
 import { createVault } from 'rnd-vault'
 
 const vault = createVault({
-  space: 'random_ru',
-  app: 'tochka_bot',
+  space: process.env.VAULT_SPACE,
+  app: process.env.VAULT_APP,
   spaceKey: process.env.VAULT_SPACE_KEY,
   appKey: process.env.VAULT_APP_KEY,
 })
