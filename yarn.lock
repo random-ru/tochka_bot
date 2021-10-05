@@ -3153,10 +3153,10 @@ rimraf@2.6.3:
   dependencies:
     glob "^7.1.3"
 
-rnd-vault@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/rnd-vault/-/rnd-vault-0.0.8.tgz#419e60145dcf68b65e3fdb5fb1534ebc93b9e755"
-  integrity sha512-BQnAuP1aMlRb38xFOmU3A6AkwUZG377sXQq8u7Omq7sDaK2ZhedhPDl9zOa1ZYStRGEfVCq3uXZ8i0qL5Uxi6A==
+rnd-vault@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/rnd-vault/-/rnd-vault-0.0.10.tgz#058523ffcb15980b5f880b6b7d393d553cc695fd"
+  integrity sha512-VwTkdov0aZJ9TdloQdxMnQp/t9LkzvqRKXNkR34zMp3OuNPvbzSb2cXgF7oB5VOYnZ321wsYNnMhdOeNY2p/iA==
   dependencies:
     axios "^0.21.4"
     lodash.camelcase "^4.3.0"

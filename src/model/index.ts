@@ -4,9 +4,9 @@ import { createSource } from '@app/lib/effector'
 
 export const botLaunched = createEvent()
 
-export const admins = createSource({ query: () => Api.admins.get() })
-export const blacklist = createSource({ query: () => Api.blacklist.get() })
-export const whitelist = createSource({ query: () => Api.whitelist.get() })
+export const admins = createSource({ query: () => Api.admins.getAll() })
+export const blacklist = createSource({ query: () => Api.blacklist.getAll() })
+export const whitelist = createSource({ query: () => Api.whitelist.getAll() })
 export const rangesBlacklist = createSource({ query: () => Api.rangesBlacklist.get() })
 
 export const loadData = createEvent()
