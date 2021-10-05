@@ -30,7 +30,7 @@ function hasBlacklistedSymbolAtTheEnd(string: string) {
   })
 }
 
-function analyze(string: string, strict = false) {
+function dotnetAnalyze(string: string, strict = false) {
   return {
     hasDotAtTheEnd: hasDotAtTheEnd(string, strict),
     hasBlacklistedSymbolAtTheEnd: hasBlacklistedSymbolAtTheEnd(string),
@@ -40,5 +40,5 @@ function analyze(string: string, strict = false) {
 export const stringsLib = {
   hasDotAtTheEnd,
   hasBlacklistedSymbolAtTheEnd,
-  analyze,
+  dotnetAnalyze,
 }

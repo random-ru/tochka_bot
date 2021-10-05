@@ -1,8 +1,10 @@
 import TelegramBot from 'node-telegram-bot-api'
 import { Api } from './api'
+import { messageHasBlockedPhrase } from './blocked-phrases'
 import { Collection, Dictionary } from './dictionary'
 import { userEntity } from './entities/user'
 import { stringsLib } from './lib/strings'
+import { telegramLib } from './lib/telegram'
 import { Time } from './lib/time'
 import { blacklist, botLaunched, loadData, whitelist } from './model'
 
@@ -19,10 +21,6 @@ function canReply(message: TelegramBot.Message) {
   const lastReply = repliesMap.get(sender.id) || Number.NEGATIVE_INFINITY
   repliesMap.set(sender.id, Date.now())
   return Date.now() - lastReply > FIVE_MINUTES
-}
-
-function getUser(message: TelegramBot.Message) {
-  return message.from
 }
 
 async function getMention(user: TelegramBot.User) {
@@ -146,8 +144,14 @@ async function handleDefault(message: TelegramBot.Message) {
   const senderIsWhitelisted = await userEntity.isWhitelisted(sender.id)
   if (senderIsAdmin || senderIsWhitelisted) return
 
+  const containsBlockedPhrase = messageHasBlockedPhrase(message)
+  if (containsBlockedPhrase) {
+    await bot.deleteMessage(message.chat.id, String(message.message_id))
+    return
+  }
+
   const senderIsBlacklisted = await userEntity.isBlacklisted(sender.id)
-  const { hasDotAtTheEnd, hasBlacklistedSymbolAtTheEnd } = stringsLib.analyze(message.text, senderIsBlacklisted)
+  const { hasDotAtTheEnd, hasBlacklistedSymbolAtTheEnd } = stringsLib.dotnetAnalyze(message.text, senderIsBlacklisted)
   if (!hasDotAtTheEnd && !hasBlacklistedSymbolAtTheEnd) return
 
   const willReply = canReply(message)
@@ -179,7 +183,7 @@ async function handleMessage(message: TelegramBot.Message) {
   const isForward = Boolean(message.forward_date)
   if (isForward) return
 
-  const user = getUser(message)
+  const user = telegramLib.getUser(message)
   if (!user) return
 
   try {
