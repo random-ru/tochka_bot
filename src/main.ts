@@ -176,6 +176,9 @@ async function handleMessage(message: TelegramBot.Message) {
   const isOld = Date.now() - message.date * 1000 > Time.Minute
   if (isOld) return
 
+  const isForward = Boolean(message.forward_date)
+  if (isForward) return
+
   const user = getUser(message)
   if (!user) return
 
