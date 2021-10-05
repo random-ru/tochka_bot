@@ -45,6 +45,7 @@ const BLOCKED_PHRASES: BlockedPhraseConfig = {
   323030186: [...phrase('поридж'), ...phrase('поредж')],
   /* Ливни нахуй */
   1528363783: phrase('ор'),
+  706642400: phrase('ор'),
 }
 
 function matchesPhraseRegexps(string: string, regexps: RegExp[]) {
