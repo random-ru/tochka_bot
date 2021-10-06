@@ -26,21 +26,29 @@ export function createStatus<TParams extends unknown, TDone extends unknown, TFa
   }
 }
 
-interface Options<TValue> {
+interface Options<TValue, TMapped> {
   query: () => Promise<TValue>
+  selector?: (value: TValue) => TMapped
 }
 
-interface Source<TValue> {
-  store: Store<TValue | null>
+interface Source<TValue, TMapped> {
+  store: Store<TMapped | null>
   load: Event<void>
   status: Status
 }
 
-export function createSource<TValue>({ query }: Options<TValue>): Source<TValue> {
+export function createSource<TValue, TMapped = TValue>({
+  query,
+  selector = (value) => value as unknown as TMapped,
+}: Options<TValue, TMapped>): Source<TValue, TMapped> {
   const effect = createEffect(query)
   const load = createEvent()
   forward({ from: load, to: effect })
   const store = restore(effect, null)
+  const mapped = store.map((value) => {
+    if (value === null) return null
+    return selector(value)
+  })
   const status = createStatus(effect)
-  return { store, load, status }
+  return { store: mapped, load, status }
 }

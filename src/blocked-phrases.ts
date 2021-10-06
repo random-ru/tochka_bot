@@ -12,6 +12,13 @@ const OVERLAPS: Record<string, string[]> = {
   и: ['И'],
   д: ['Д'],
   ж: ['Ж'],
+  е: ['Е', 'e', 'E'],
+  p: ['P', 'р', 'Р'],
+  o: ['O', 'о', 'О', '0'],
+  r: ['R', 'г'],
+  i: ['I'],
+  d: ['D'],
+  g: ['G'],
 }
 
 const CHECKED_PHRASE_RANGES: Record<string, [number, number]> = {
@@ -29,23 +36,29 @@ function getCharWithOverlaps(char: string): string {
   return completed
 }
 
-function phrase(string: string): RegExp[] {
-  const charGroups: string[] = []
-  for (const char of string) {
-    const withOverlaps = getCharWithOverlaps(char)
-    charGroups.push(`[${withOverlaps}]+`)
-  }
-  const main = charGroups.join(`[ ]*`)
+export function regexpsForPhrases(phrases: string[]): RegExp[] {
+  const regexpStrings: string[] = []
 
-  return [` ${main} `, `^${main} `, ` ${main}$`, `^${main}$`].map((regexpString) => new RegExp(regexpString))
+  for (const phrase of phrases) {
+    const charGroups: string[] = []
+    for (const char of phrase) {
+      const withOverlaps = getCharWithOverlaps(char)
+      charGroups.push(`[${withOverlaps}]+`)
+    }
+    const main = charGroups.join(`[ ]*`)
+    regexpStrings.push(` ${main} `)
+    regexpStrings.push(`^${main} `)
+    regexpStrings.push(` ${main}$`)
+    regexpStrings.push(`^${main}$`)
+  }
+
+  return regexpStrings.map((string) => new RegExp(string))
 }
 
 const BLOCKED_PHRASES: BlockedPhraseConfig = {
-  /* Соре суацк */
-  323030186: [...phrase('поридж'), ...phrase('поредж')],
-  /* Ливни нахуй */
-  1528363783: phrase('ор'),
-  706642400: phrase('ор'),
+  323030186: regexpsForPhrases(['поридж', 'поредж', 'poridge', 'поридге']),
+  1528363783: regexpsForPhrases(['ор']),
+  706642400: regexpsForPhrases(['ор']),
 }
 
 function matchesPhraseRegexps(string: string, regexps: RegExp[]) {
